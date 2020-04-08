@@ -5,6 +5,16 @@
 Download complete driver package with guides [from this repo](https://github.com/XAIOThaifeng/realtek-linux/tree/master/RTL8822CE).
 
 ## Instalación
+
+### [PatoJAD Repo](https://patojad.com.ar/repositorio/)
+```
+echo 'deb https://gitlab.com/patojad/repository/raw/patojad/debs/ patojad main
+' | sudo tee /etc/apt/sources.list.d/patojad.list
+wget -qO - https://gitlab.com/LynxOS/repository/raw/lynxos/LynxPub.gpg | apt-key add -
+sudo apt update
+sudo apt install rtl88x2ce-dkms
+```
+
 ### Paquete deb
 ```
 wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403/rtl88x2ce-dkms_35403_amd64.deb
