@@ -1,5 +1,7 @@
 # RTL88x2CE dkms module driver
 
+Download complete driver package with guides [from this repo](https://github.com/XAIOThaifeng/realtek-linux/tree/master/RTL8822CE).
+
 ## Instalación
 
 ```
