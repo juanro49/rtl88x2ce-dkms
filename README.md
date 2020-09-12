@@ -35,3 +35,9 @@ sudo dkms install -m rtl88x2ce -v 35403
 ## Iniciar módulo
 
 `sudo modprobe rtl88x2ce`
+
+Driver testeado en:
+
+[MSI Alpha 15](https://instatecno.com/review-portatil-msi-alpha-15-a3ddk/) con [SparkyLinux Rolling](https://sparkylinux.org/)
+
+Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter
