@@ -17,7 +17,7 @@ sudo apt install rtl88x2ce-dkms
 
 ### Paquete deb
 ```
-wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403/rtl88x2ce-dkms_35403_amd64.deb
+wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403_1/rtl88x2ce-dkms_35403_amd64.deb
 sudo dpkg -i rtl88x2ce-dkms_35403_amd64.deb
 ```
 
