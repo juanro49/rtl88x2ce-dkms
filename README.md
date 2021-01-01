@@ -6,7 +6,7 @@ Download complete driver package with guides [from this repo](https://github.com
 
 ## Instalación
 
-### [PatoJAD Repo](https://patojad.com.ar/repositorio/)
+### [PatoJAD Repo](https://patojad.com.ar/repositorio/) (desactualizado)
 ```
 echo 'deb https://gitlab.com/patojad/repository/raw/patojad/debs/ patojad main
 ' | sudo tee /etc/apt/sources.list.d/patojad.list
@@ -17,7 +17,7 @@ sudo apt install rtl88x2ce-dkms
 
 ### Paquete deb
 ```
-wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403_1/rtl88x2ce-dkms_35403_amd64.deb
+wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403_20210101/rtl88x2ce-dkms_35403_amd64.deb
 sudo dpkg -i rtl88x2ce-dkms_35403_amd64.deb
 ```
 
