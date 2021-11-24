@@ -44,5 +44,5 @@ Driver testeado en:
 Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter
 
 ## Donaciones
-[<img src="https://coindrop.to/embed-button.png" border-radius="10px" height="57" width="200px" alt="Coindrop.to me">](https://coindrop.to/juanro49) [<img alt="Donate using Liberapay" border-radius="10px" height="57" width="200px" src="https://liberapay.com/assets/widgets/donate.svg">](https://liberapay.com/juanro49/donate)
+[<img src="https://coindrop.to/embed-button.png" border-radius="10px" height="57" width="200px" alt="Coindrop.to me">](https://coindrop.to/juanro49) [<img alt="Donate using Liberapay" border-radius="10px" height="57" width="200px" src="https://liberapay.com/assets/widgets/donate.svg">](https://liberapay.com/juanro49/donate) [<img src="https://cesium.duniter.io/img/duniter_button.svg" border-radius="10px" height="57" width="200px" alt="moneda libre G1">](https://cesium.duniter.io/api/#/v1/payment/5eETo8btrVGYTTyC5nAvqCPmLBok4aRLhxiGP7dy3Wqw?comment=Donaci%C3%B3n%20github)
 
