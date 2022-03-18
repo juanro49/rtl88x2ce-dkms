@@ -89,6 +89,7 @@ struct pci_device_id rtw_pci_id_tbl[] = {
 #endif
 #ifdef CONFIG_RTL8822C
 	{PCI_DEVICE(PCI_VENDER_ID_REALTEK, 0xC822), .driver_data = RTL8822C},
+	{PCI_DEVICE(PCI_VENDER_ID_REALTEK, 0xC82F), .driver_data = RTL8822C},
 #endif
 	{},
 };
