@@ -85,9 +85,15 @@ void rtl8822ce_reset_bd(_adapter *padapter)
 
 				pxmitbuf = rtl8822ce_dequeue_xmitbuf(ring);
 				if (pxmitbuf) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+					dma_unmap_single(&pdvobjpriv->ppcidev->dev,
+						GET_TX_BD_PHYSICAL_ADDR0_LOW(tx_bd),
+						pxmitbuf->len, DMA_TO_DEVICE);
+#else
 					pci_unmap_single(pdvobjpriv->ppcidev,
 						GET_TX_BD_PHYSICAL_ADDR0_LOW(tx_bd),
 						pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 					rtw_free_xmitbuf(t_priv, pxmitbuf);
 				} else {
 					RTW_INFO("%s(): qlen(%d) is not zero, but have xmitbuf in pending queue\n",
@@ -546,10 +552,17 @@ static void rtl8822ce_unmap_beacon_icf(PADAPTER Adapter)
 	}
 //	RTW_INFO("FREE pxmitbuf: %p, buf_desc: %p, sz: %d\n", pxmitbuf, tx_bufdesc, pxmitbuf->len);
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	dma_unmap_single(&pdvobjpriv->ppcidev->dev,
+			 GET_TX_BD_PHYSICAL_ADDR0_LOW(tx_bufdesc),
+			 pxmitbuf->len,
+			 DMA_TO_DEVICE);
+#else
 	pci_unmap_single(pdvobjpriv->ppcidev,
 			 GET_TX_BD_PHYSICAL_ADDR0_LOW(tx_bufdesc),
 			 pxmitbuf->len,
 			 PCI_DMA_TODEVICE);
+#endif
 }
 
 u32 rtl8822ce_init_bd(_adapter *padapter)
