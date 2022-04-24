@@ -33,8 +33,13 @@ static u8 pci_write_port_not_xmitframe(void *d,  u32 size, u8 *pBuf,  u8 qsel)
 
 
 	/* map TX DESC buf_addr (including TX DESC + tx data) */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	mapping = dma_map_single(&pdev->dev, pBuf,
+		 size + TX_WIFI_INFO_SIZE, DMA_TO_DEVICE);
+#else
 	mapping = pci_map_single(pdev, pBuf,
 		 size + TX_WIFI_INFO_SIZE, PCI_DMA_TODEVICE);
+#endif
 
 	/* Calculate page size.
 	 * Total buffer length including TX_WIFI_INFO and PacketLen */
@@ -44,11 +49,20 @@ static u8 pci_write_port_not_xmitframe(void *d,  u32 size, u8 *pBuf,  u8 qsel)
 			tx_page_used++;
 	}
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	txbd = dma_alloc_coherent(&pdev->dev, sizeof(struct tx_buf_desc), &txbd_dma, GFP_KERNEL);
+#else
 	txbd = pci_alloc_consistent(pdev, sizeof(struct tx_buf_desc), &txbd_dma);
+#endif
 
 	if (!txbd) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+		dma_unmap_single(&pdev->dev, mapping,
+			size + TX_WIFI_INFO_SIZE, DMA_FROM_DEVICE);
+#else
 		pci_unmap_single(pdev, mapping,
 			size + TX_WIFI_INFO_SIZE, PCI_DMA_FROMDEVICE);
+#endif
 
 		return _FALSE;
 	}
@@ -111,10 +125,19 @@ static u8 pci_write_port_not_xmitframe(void *d,  u32 size, u8 *pBuf,  u8 qsel)
 
 	udelay(100);
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	dma_free_coherent(&pdev->dev, sizeof(struct tx_buf_desc), txbd, txbd_dma);
+#else
 	pci_free_consistent(pdev, sizeof(struct tx_buf_desc), txbd, txbd_dma);
+#endif
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	dma_unmap_single(&pdev->dev, mapping, size + TX_WIFI_INFO_SIZE,
+		DMA_FROM_DEVICE);
+#else
 	pci_unmap_single(pdev, mapping, size + TX_WIFI_INFO_SIZE,
 		PCI_DMA_FROMDEVICE);
+#endif
 
 	return ret;
 }
@@ -239,8 +262,13 @@ static u8 pci_write_data_rsvd_page_xmitframe(void *d, u8 *pBuf, u32 size)
 	} while (!bcn_valid && DLBcnCount <= 100 && !RTW_CANNOT_RUN(padapter));
 
 	txbd = (u8 *)(&ring->buf_desc[0]);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	dma_unmap_single(&pdev->dev, GET_TX_BD_PHYSICAL_ADDR0_LOW(txbd),
+		pxmitbuf->len, DMA_TO_DEVICE);
+#else
 	pci_unmap_single(pdev, GET_TX_BD_PHYSICAL_ADDR0_LOW(txbd),
 		pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 
 	return _TRUE;
 }

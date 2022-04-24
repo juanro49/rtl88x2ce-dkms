@@ -211,10 +211,17 @@ static void rtl8822ce_rx_mpdu(_adapter *padapter)
 			_rtw_init_listhead(&precvframe->u.hdr.list);
 			precvframe->u.hdr.len = 0;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			dma_unmap_single(&pdvobjpriv->ppcidev->dev,
+					 *((dma_addr_t *)skb->cb),
+					 r_priv->rxbuffersize,
+					 DMA_FROM_DEVICE);
+#else
 			pci_unmap_single(pdvobjpriv->ppcidev,
 					 *((dma_addr_t *)skb->cb),
 					 r_priv->rxbuffersize,
 					 PCI_DMA_FROMDEVICE);
+#endif
 
 			rtl8822c_query_rx_desc(precvframe, skb->data);
 			pattrib = &precvframe->u.hdr.attrib;
@@ -247,10 +254,17 @@ static void rtl8822ce_rx_mpdu(_adapter *padapter)
 
 				RTW_INFO("rtl8822ce_rx_mpdu:can't allocate memory for skb copy\n");
 				*((dma_addr_t *) skb->cb) =
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+					dma_map_single(&pdvobjpriv->ppcidev->dev,
+						       skb_tail_pointer(skb),
+						       r_priv->rxbuffersize,
+						       DMA_FROM_DEVICE);
+#else
 					pci_map_single(pdvobjpriv->ppcidev,
 						       skb_tail_pointer(skb),
 						       r_priv->rxbuffersize,
 						       PCI_DMA_FROMDEVICE);
+#endif
 				goto done;
 			}
 
@@ -270,10 +284,17 @@ static void rtl8822ce_rx_mpdu(_adapter *padapter)
 						   pfree_recv_queue);
 			}
 			*((dma_addr_t *) skb->cb) =
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+				dma_map_single(&pdvobjpriv->ppcidev->dev,
+					       skb_tail_pointer(skb),
+					       r_priv->rxbuffersize,
+					       DMA_FROM_DEVICE);
+#else
 				pci_map_single(pdvobjpriv->ppcidev,
 					       skb_tail_pointer(skb),
 					       r_priv->rxbuffersize,
 					       PCI_DMA_FROMDEVICE);
+#endif
 		}
 done:
 
@@ -374,10 +395,17 @@ int rtl8822ce_init_rxbd_ring(_adapter *padapter)
 	/* rx_queue_idx 1:RX_CMD_QUEUE */
 	for (rx_queue_idx = 0; rx_queue_idx < 1; rx_queue_idx++) {
 		r_priv->rx_ring[rx_queue_idx].buf_desc =
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			dma_alloc_coherent(&pdev->dev,
+			     sizeof(*r_priv->rx_ring[rx_queue_idx].buf_desc) *
+					     r_priv->rxringcount,
+				     &r_priv->rx_ring[rx_queue_idx].dma, GFP_KERNEL);
+#else
 			pci_alloc_consistent(pdev,
 			     sizeof(*r_priv->rx_ring[rx_queue_idx].buf_desc) *
 					     r_priv->rxringcount,
 				     &r_priv->rx_ring[rx_queue_idx].dma);
+#endif
 
 		if (!r_priv->rx_ring[rx_queue_idx].buf_desc ||
 		    (unsigned long)r_priv->rx_ring[rx_queue_idx].buf_desc &
@@ -405,9 +433,15 @@ int rtl8822ce_init_rxbd_ring(_adapter *padapter)
 
 			/* just set skb->cb to mapping addr
 			 * for pci_unmap_single use */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			*mapping = dma_map_single(&pdev->dev, skb_tail_pointer(skb),
+						  r_priv->rxbuffersize,
+						  DMA_FROM_DEVICE);
+#else
 			*mapping = pci_map_single(pdev, skb_tail_pointer(skb),
 						  r_priv->rxbuffersize,
 						  PCI_DMA_FROMDEVICE);
+#endif
 
 			/* Reset FS, LS, Total len */
 			SET_RX_BD_LS(rx_desc, 0);
@@ -448,14 +482,25 @@ void rtl8822ce_free_rxbd_ring(_adapter *padapter)
 			if (!skb)
 				continue;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			dma_unmap_single(&pdev->dev,
+					 *((dma_addr_t *) skb->cb),
+					 r_priv->rxbuffersize,
+					 DMA_FROM_DEVICE);
+#else
 			pci_unmap_single(pdev,
 					 *((dma_addr_t *) skb->cb),
 					 r_priv->rxbuffersize,
 					 PCI_DMA_FROMDEVICE);
+#endif
 			kfree_skb(skb);
 		}
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+		dma_free_coherent(&pdev->dev,
+#else
 		pci_free_consistent(pdev,
+#endif
 			    sizeof(*r_priv->rx_ring[rx_queue_idx].buf_desc) *
 				    r_priv->rxringcount,
 				    r_priv->rx_ring[rx_queue_idx].buf_desc,
